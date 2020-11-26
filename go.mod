@@ -1,4 +1,4 @@
-module github.com/HuuLane/just-lil-random-logger
+module github.com/HuuLane/random-logger
 
 go 1.15
 
