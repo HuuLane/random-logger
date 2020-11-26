@@ -76,7 +76,7 @@ func (rl *RandomLogger) RandomLog() {
 		rl.Info("This is a info")
 		return
 	}
-	if n != 100 {
+	if n == 100 {
 		rl.Error("This is a error")
 		return
 	}
