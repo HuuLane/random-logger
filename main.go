@@ -47,6 +47,30 @@ func randomTimerBetween(a, b int) chan void {
 	return ch
 }
 
+type RandomLogger struct {
+	i *log.Logger
+	w *log.Logger
+	e *log.Logger
+}
+
+func NewRandomLogger(out io.Writer) *RandomLogger {
+	rl := new(RandomLogger)
+	rl.i = log.New(out, "Info: ", log.LstdFlags)
+	rl.w = log.New(out, "Warning: ", log.LstdFlags)
+	rl.e = log.New(out, "Error: ", log.LstdFlags)
+	return rl
+}
+
+func (rl *RandomLogger) Info(v ...interface{}) {
+	rl.i.Println(v...)
+}
+func (rl *RandomLogger) Warning(v ...interface{}) {
+	rl.w.Println(v...)
+}
+func (rl *RandomLogger) Error(v ...interface{}) {
+	rl.e.Println(v...)
+}
+
 func main() {
 	// Where?
 	// check file flag
@@ -73,18 +97,16 @@ func main() {
 		out = os.Stdout
 	}
 
-	I := log.New(out, "info: ", log.LstdFlags)
-	W := log.New(out, "warning: ", log.LstdFlags)
-	E := log.New(out, "error: ", log.LstdFlags)
+	L := NewRandomLogger(out)
 
 	normalTimer := randomTimerBetween(1, 3)
 	defer close(normalTimer)
 	for {
 		select {
 		case <-normalTimer:
-			I.Println("This is a info")
-			W.Println("This is a warning")
-			E.Println("This is a error")
+			L.Info("This is a info")
+			L.Warning("This is a warning")
+			L.Error("This is a error")
 		}
 	}
 }
