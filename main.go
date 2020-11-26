@@ -7,6 +7,21 @@ import (
 	"os"
 )
 
+func openFileAppendly(filename string) (io.Writer, func()) {
+	f, err := os.OpenFile(filename,
+		os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return f, func() {
+		err := f.Close()
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func main() {
 	// Where?
 	// check file flag
@@ -21,22 +36,13 @@ func main() {
 	// buffer
 	// append mode
 
-	out2file := flag.Bool("file", false, "output to file `random.log`")
+	out2file := flag.Bool("f", false, "output to file `random.log`")
 	flag.Parse()
 
 	var out io.Writer
 	if *out2file {
-		f, err := os.OpenFile("random.log",
-			os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-		if err != nil {
-			log.Println(err)
-		}
-		defer func() {
-			err := f.Close()
-			if err != nil {
-				panic(err)
-			}
-		}()
+		f, closer := openFileAppendly("random.log")
+		defer closer()
 		out = f
 	} else {
 		out = os.Stdout
@@ -46,7 +52,7 @@ func main() {
 	W := log.New(out, "warning: ", log.LstdFlags)
 	E := log.New(out, "error: ", log.LstdFlags)
 
-	I.Println("This is info")
-	W.Println("This is warning")
-	E.Println("This is error")
+	I.Println("This is a info")
+	W.Println("This is a warning")
+	E.Println("This is a error")
 }
