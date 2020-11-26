@@ -4,7 +4,9 @@ import (
 	"flag"
 	"io"
 	"log"
+	"math/rand"
 	"os"
+	"time"
 )
 
 func openFileAppendly(filename string) (io.Writer, func()) {
@@ -22,6 +24,29 @@ func openFileAppendly(filename string) (io.Writer, func()) {
 	}
 }
 
+func randomNumBetween(min, max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max-min+1) + min
+}
+
+type void struct{}
+
+func randomTimerBetween(a, b int) chan void {
+	ch := make(chan void)
+	go func() {
+		var loop func()
+		loop = func() {
+			n := randomNumBetween(a, b)
+			time.Sleep(time.Duration(n) * time.Second)
+			log.Println("Send")
+			ch <- void{}
+			loop()
+		}
+		loop()
+	}()
+	return ch
+}
+
 func main() {
 	// Where?
 	// check file flag
@@ -29,7 +54,7 @@ func main() {
 	// else to stdout
 
 	// When?
-	// burst: 100-200 records per 30s-1min
+	// burst: 100-200 records per 30s-60s
 	// normal: log a record per 1s-3s
 
 	// How?
@@ -52,7 +77,14 @@ func main() {
 	W := log.New(out, "warning: ", log.LstdFlags)
 	E := log.New(out, "error: ", log.LstdFlags)
 
-	I.Println("This is a info")
-	W.Println("This is a warning")
-	E.Println("This is a error")
+	normalTimer := randomTimerBetween(1, 3)
+	defer close(normalTimer)
+	for {
+		select {
+		case <-normalTimer:
+			I.Println("This is a info")
+			W.Println("This is a warning")
+			E.Println("This is a error")
+		}
+	}
 }
