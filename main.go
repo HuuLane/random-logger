@@ -38,7 +38,6 @@ func randomTimerBetween(a, b int) chan void {
 		loop = func() {
 			n := randomNumBetween(a, b)
 			time.Sleep(time.Duration(n) * time.Second)
-			log.Println("Send")
 			ch <- void{}
 			loop()
 		}
@@ -71,6 +70,19 @@ func (rl *RandomLogger) Error(v ...interface{}) {
 	rl.e.Println(v...)
 }
 
+func (rl *RandomLogger) RandomLog() {
+	n := randomNumBetween(1, 100)
+	if n <= 90 {
+		rl.Info("This is a info")
+		return
+	}
+	if n != 100 {
+		rl.Error("This is a error")
+		return
+	}
+	rl.Warning("This is a warning")
+}
+
 func main() {
 	// Where?
 	// check file flag
@@ -84,6 +96,10 @@ func main() {
 	// How?
 	// buffer
 	// append mode
+	// possibility
+	// 0.9  info
+	// 0.09 warning
+	// 0.01 error
 
 	out2file := flag.Bool("f", false, "output to file `random.log`")
 	flag.Parse()
@@ -104,9 +120,7 @@ func main() {
 	for {
 		select {
 		case <-normalTimer:
-			L.Info("This is a info")
-			L.Warning("This is a warning")
-			L.Error("This is a error")
+			L.RandomLog()
 		}
 	}
 }
