@@ -83,6 +83,13 @@ func (rl *RandomLogger) RandomLog() {
 	rl.Warning("This is a warning")
 }
 
+func (rl *RandomLogger) Burst() {
+	n := randomNumBetween(50, 200)
+	for i := 0; i < n; i++ {
+		rl.RandomLog()
+	}
+}
+
 func main() {
 	// Where?
 	// check file flag
@@ -90,8 +97,8 @@ func main() {
 	// else to stdout
 
 	// When?
-	// burst: 100-200 records per 30s-60s
-	// normal: log a record per 1s-3s
+	// burst: 100-200 records per 50s-120s
+	// normal: log a record per 1s-10s
 
 	// How?
 	// buffer
@@ -115,12 +122,18 @@ func main() {
 
 	L := NewRandomLogger(out)
 
-	normalTimer := randomTimerBetween(1, 3)
-	defer close(normalTimer)
+	normalTimer := randomTimerBetween(1, 10)
+	burstTimer := randomTimerBetween(50, 120)
+	defer func() {
+		close(normalTimer)
+		close(burstTimer)
+	}()
 	for {
 		select {
 		case <-normalTimer:
 			L.RandomLog()
+		case <-burstTimer:
+			L.Burst()
 		}
 	}
 }
