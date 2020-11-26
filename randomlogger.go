@@ -35,16 +35,18 @@ func (rl *RandomLogger) RandomLog() {
 	// 0.09 warning
 	// 0.01 error
 
+	content := FakeData()
+
 	n := randomNumBetween(1, 100)
 	if n <= 90 {
-		rl.Info("This is a info")
+		rl.Info(content)
 		return
 	}
 	if n == 100 {
-		rl.Error("This is a error")
+		rl.Error(content)
 		return
 	}
-	rl.Warning("This is a warning")
+	rl.Warning(content)
 }
 
 func (rl *RandomLogger) Burst() {

@@ -26,10 +26,10 @@ func main() {
 	L := NewRandomLogger(out)
 
 	// When?
-	// burst:  per 50s-120s
-	// normal: per 1s-10s
-	normalTimer := randomTimerBetween(1, 10)
-	burstTimer := randomTimerBetween(50, 120)
+	// burst:  per 120s-360s
+	// normal: per 1s-20s
+	normalTimer := randomTimerBetween(1, 20)
+	burstTimer := randomTimerBetween(120, 360)
 	defer func() {
 		close(normalTimer)
 		close(burstTimer)
