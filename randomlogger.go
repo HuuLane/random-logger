@@ -13,9 +13,9 @@ type RandomLogger struct {
 
 func NewRandomLogger(out io.Writer) *RandomLogger {
 	rl := new(RandomLogger)
-	rl.i = log.New(out, "Info: ", log.LstdFlags)
-	rl.w = log.New(out, "Warning: ", log.LstdFlags)
-	rl.e = log.New(out, "Error: ", log.LstdFlags)
+	rl.i = log.New(out, "INFO: ", log.LstdFlags)
+	rl.w = log.New(out, "WARNING: ", log.LstdFlags)
+	rl.e = log.New(out, "ERROR: ", log.LstdFlags)
 	return rl
 }
 
