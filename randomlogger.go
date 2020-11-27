@@ -37,7 +37,7 @@ func (rl *RandomLogger) RandomLog() {
 
 	content := FakeData()
 
-	n := randomNumBetween(1, 100)
+	n := randomIntInclusiveRange(1, 100)
 	if n <= 90 {
 		rl.Info(content)
 		return
@@ -50,7 +50,7 @@ func (rl *RandomLogger) RandomLog() {
 }
 
 func (rl *RandomLogger) Burst() {
-	n := randomNumBetween(50, 200)
+	n := randomIntInclusiveRange(50, 200)
 	for i := 0; i < n; i++ {
 		rl.RandomLog()
 	}

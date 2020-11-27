@@ -25,19 +25,19 @@ func openFileAppendly(filename string) (io.Writer, func()) {
 	}
 }
 
-func randomNumBetween(min, max int) int {
+func randomIntInclusiveRange(min, max int) int {
 	rand.Seed(time.Now().UnixNano())
 	return rand.Intn(max-min+1) + min
 }
 
 type void struct{}
 
-func randomTimerBetween(a, b int) chan void {
+func randomTimer(earliest, latest int) chan void {
 	ch := make(chan void)
 	go func() {
 		var loop func()
 		loop = func() {
-			n := randomNumBetween(a, b)
+			n := randomIntInclusiveRange(earliest, latest)
 			time.Sleep(time.Duration(n) * time.Second)
 			ch <- void{}
 			loop()
